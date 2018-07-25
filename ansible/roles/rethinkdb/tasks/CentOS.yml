@@ -1,0 +1,32 @@
+---
+# File: tasks/CentOS.yml - CentOS tasks for ansible-rethinkdb
+# Download and install SELinux Python module and RethinkDB
+
+- name: SELinux Python module
+  yum: name=libselinux-python state=present
+  tags: installation
+
+#- name: RethinkDB Yum repository
+#  get_url: url=sudo wget http://download.rethinkdb.com/centos/7/`uname -m`/rethinkdb.repo \
+#                         -O /etc/yum.repos.d/rethinkdb.repo
+#               sudo yum install rethinkdb dest=/etc/yum.repos.d/rethinkdb.repo  timeout=60
+#  tags: installation
+
+- name: Add repository
+  yum_repository:
+    name: epel
+    description: EPEL YUM repo
+    baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+
+- name: Install
+  yum: name=rethinkdb state=present
+  tags: installation
+
+- name: Enable service
+  service: name=rethinkdb enabled=yes
+  tags: service
+
+- name: Configure instance
+  template: src=instance.conf.j2 dest=/etc/rethinkdb/instances.d/{{ ansible_hostname }}.conf
+  notify: Start RethinkDB
+  tags: configuration

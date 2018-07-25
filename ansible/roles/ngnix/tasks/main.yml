@@ -1,11 +1,5 @@
 ---
-- import_tasks: keys/apt-key.yml
-  when: ansible_os_family == "Debian"
-
-- import_tasks: keys/rpm-key.yml
-  when: ansible_os_family == "RedHat" or ansible_os_family == "Suse"
-
-- name: "(Install: Debian/Ubuntu/CentOS/RedHat/FreeBSD) Install NGINX"
+- name: "Debian/Ubuntu/CentOS/RedHat/FreeBSD) Install NGINX"
   block:
 
     - import_tasks: opensource/install-oss.yml
